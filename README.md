@@ -23,11 +23,10 @@ To keep up to date with changes and development progress, follow the [Nimbus blo
 
 ### Prerequisites
 
-* A recent version of Nim
-  * We use the version in the [Status fork](https://github.com/status-im/Nim)
-  * Follow the Nim installation instructions or use [choosenim](https://github.com/dom96/choosenim) to manage your Nim versions
 * A recent version of Facebook's [RocksDB](https://github.com/facebook/rocksdb/)
   * Compile [from source](https://github.com/facebook/rocksdb/blob/master/INSTALL.md) or use the package manager of your OS; for example, [Debian](https://packages.debian.org/search?keywords=librocksdb-dev&searchon=names&exact=1&suite=all&section=all), [Ubuntu](https://packages.ubuntu.com/search?keywords=librocksdb-dev&searchon=names&exact=1&suite=all&section=all), and [Fedora](https://apps.fedoraproject.org/packages/rocksdb) have working RocksDB packages
+
+* GNU make, Bash and the usual POSIX utilities
 
 #### Obtaining the prerequisites through the Nix package manager
 
@@ -37,43 +36,57 @@ Users of the [Nix package manager](https://nixos.org/nix/download.html) can inst
 nix-shell nimbus.nix
 ```
 
-### Build & Install
+### Build & Develop
 
-We use [Nimble](https://github.com/nim-lang/nimble) to manage dependencies and run tests.
-
-To build and install Nimbus in your home folder, just execute:
+To build Nimbus (in "build/nimbus"), just execute:
 
 ```bash
-nimble install
+make
 ```
 
-After a succesful installation, running `nimbus --help` will provide you with a list of
-the available command-line options. To start syncing with mainnet, just execute `nimbus`
+Running `./build/nimbus --help` will provide you with a list of
+the available command-line options. To start syncing with mainnet, just execute `./build/nimbus`
 without any parameters.
 
 To execute all tests:
 ```bash
-nimble test
+make test
+```
+
+To pull the latest changes in all the Git repositories involved:
+```bash
+make update
+```
+
+To run a command that might use binaries from the Status Nim fork:
+```bash
+./env.sh vim
 ```
 
 Our Wiki provides additional helpful information for [debugging individual test cases][1]
 and for [pairing Nimbus with a locally running copy of Geth][2].
 
-[1]: https://github.com/status-im/nimbus/wiki/Understanding-and-debugging-Nimbus-EVM-JSON-tests
-[2]: https://github.com/status-im/nimbus/wiki/Debugging-state-reconstruction
+#### Windows
 
-### Build and Run Nimbus
+You'll need [MinGW](http://www.mingw.org/wiki/Getting_Started) with these meta-packages installed: "mingw32-base-bin" and
+"msys-base-bin". Don't forget to add "C:\MinGW\bin" to the [system PATH](https://yichaoou.github.io/tutorials/software/2016/06/28/git-bash-install-gcc).
 
-```bash
-nimble nimbus
-./build/nimbus
-```
+Install [Git for Windows](https://gitforwindows.org/) and use a "Git Bash shell" to clone and build the software. Instead of `make`, you'll need to use `mingw32-make`.
 
-Report any errors you encounter, please, if not [already documented](https://github.com/status-im/nimbus)!
+### Troubleshooting
 
-#### Troubleshooting
+Report any errors you encounter, please, if not [already documented](https://github.com/status-im/nimbus/issues)!
 
 Sometimes, the build will fail even though the latest CI is green - here are a few tips to handle this:
+
+#### Using the Makefile
+
+* Turn it off and on again:
+```bash
+make clean update
+```
+
+#### Using Nimble directly
 
 * Wrong Nim version
   * We depend on many bleeding-edge features - Nim regressions often happen
@@ -96,3 +109,6 @@ or
 * Apache License, Version 2.0, ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
 
 at your option. This file may not be copied, modified, or distributed except according to those terms.
+
+[1]: https://github.com/status-im/nimbus/wiki/Understanding-and-debugging-Nimbus-EVM-JSON-tests
+[2]: https://github.com/status-im/nimbus/wiki/Debugging-state-reconstruction
